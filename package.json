@@ -1,19 +1,23 @@
 {
   "name": "agrofertmart",
   "version": "1.0.0",
-  "description": "",
+  "description": "Agricultural e-commerce platform — fertilizers, pesticides, equipment & seeds",
   "main": "app.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "seed": "node seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SandeepAngala/AgroFertMart.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["agriculture", "ecommerce", "fertilizer", "nodejs"],
+  "author": "Sandeep Angala",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/SandeepAngala/AgroFertMart/issues"
@@ -34,7 +38,9 @@
     "mongoose": "^9.3.0",
     "morgan": "^1.10.1",
     "multer": "^2.1.1",
-    "nodemon": "^3.1.14",
     "razorpay": "^2.9.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
