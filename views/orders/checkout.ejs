@@ -1,0 +1,87 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-4xl mx-auto py-12 px-4">
+    <h1 class="text-4xl font-black text-green-900 mb-10"><i class="fas fa-check-circle mr-3"></i> Checkout</h1>
+
+    <form action="/orders/place" method="POST" class="animate-up" id="checkout-form" onsubmit="handlePlaceOrder(event)">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Billing Details -->
+            <div class="glass-panel p-10 border-0">
+                <h2 class="text-3xl font-black text-gray-800 mb-8 italic">Delivery Info</h2>
+                <div class="space-y-8">
+                    <div>
+                        <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">Shipping Address</label>
+                        <textarea name="address" rows="4" required class="w-full p-4 border-2 border-gray-100 rounded-2xl focus:border-green-500 focus:outline-none transition" placeholder="Enter your full village address and landmark"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-1">Phone Number</label>
+                        <input type="text" name="phone" required class="w-full p-4 border-2 border-gray-100 rounded-2xl focus:border-green-500 focus:outline-none transition" placeholder="+91 XXXXX XXXXX">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout Form -->
+            <div class="bg-white p-10 rounded-3xl shadow-2xl border border-green-50">
+                <h2 class="text-2xl font-bold text-gray-800 mb-8">Payment Details</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Payment Method</label>
+                        <div class="space-y-4">
+                            <label class="block relative border-2 border-gray-100 rounded-2xl p-4 cursor-pointer hover:bg-gray-50 transition peer">
+                                <input type="radio" name="payment_method" value="pay_now" checked class="absolute top-4 right-4 text-green-600 focus:ring-green-500">
+                                <div class="flex items-center gap-4">
+                                    <span class="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-xl">
+                                        <i class="fas fa-credit-card"></i>
+                                    </span>
+                                    <div>
+                                        <p class="font-bold text-gray-800">Pay Now</p>
+                                        <p class="text-xs text-gray-400">Secure payment via Razorpay</p>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="block relative border-2 border-gray-100 rounded-2xl p-4 cursor-pointer hover:bg-gray-50 transition">
+                                <input type="radio" name="payment_method" value="pay_on_delivery" class="absolute top-4 right-4 text-green-600 focus:ring-green-500">
+                                <div class="flex items-center gap-4">
+                                    <span class="bg-green-100 text-green-600 w-10 h-10 rounded-full flex items-center justify-center text-xl">
+                                        <i class="fas fa-hand-holding-usd"></i>
+                                    </span>
+                                    <div>
+                                        <p class="font-bold text-gray-800">Pay on Delivery</p>
+                                        <p class="text-xs text-gray-400">Cash or UPI at your doorstep</p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit" id="place-order-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-2xl shadow-xl transition transform hover:translate-y-[-2px] active:translate-y-0 text-xl disabled:bg-gray-400 disabled:cursor-not-allowed">
+                            <span id="btn-text">PLACE ORDER</span> <i class="fas fa-shield-alt ml-2"></i>
+                        </button>
+                        <p class="text-center text-gray-400 text-xs mt-4">
+                            <i class="fas fa-lock mr-1"></i> Your transaction is 100% secure and encrypted.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+function handlePlaceOrder(e) {
+    const btn = document.getElementById('place-order-btn');
+    const text = document.getElementById('btn-text');
+    
+    // Disable button to prevent double-click
+    btn.disabled = true;
+    text.textContent = 'PLACING ORDER...';
+    
+    // Form will proceed with submission
+    return true;
+}
+</script>
+
+<%- include('../partials/footer') %>

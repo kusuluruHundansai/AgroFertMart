@@ -1,0 +1,138 @@
+<%- include('../partials/admin-header', { activePage: 'orders' }) %>
+
+<!-- Header -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <div>
+        <h2 class="text-2xl font-black text-gray-800">📋 Order Management</h2>
+        <p class="text-sm text-gray-400 mt-1"><%= orders.length %> total orders</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+        <select id="order-status-filter" class="border border-gray-200 rounded-xl text-sm px-3 py-2 bg-white focus:outline-none focus:border-green-400">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+        </select>
+        <input type="text" id="order-search" placeholder="Search by customer…"
+               class="w-48 border border-gray-200 rounded-xl text-sm px-3 py-2 bg-white focus:outline-none focus:border-green-400">
+    </div>
+</div>
+
+<!-- Status overview pills -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+    <div class="bg-white rounded-2xl p-4 shadow-sm text-center">
+        <p class="text-2xl font-black text-yellow-600"><%= orders.filter(o=>o.status==='pending').length %></p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mt-1">Pending</p>
+    </div>
+    <div class="bg-white rounded-2xl p-4 shadow-sm text-center">
+        <p class="text-2xl font-black text-blue-600"><%= orders.filter(o=>o.status==='shipped').length %></p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mt-1">Shipped</p>
+    </div>
+    <div class="bg-white rounded-2xl p-4 shadow-sm text-center">
+        <p class="text-2xl font-black text-green-600"><%= orders.filter(o=>o.status==='delivered').length %></p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mt-1">Delivered</p>
+    </div>
+    <div class="bg-white rounded-2xl p-4 shadow-sm text-center">
+        <p class="text-2xl font-black text-red-500"><%= orders.filter(o=>o.status==='cancelled').length %></p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mt-1">Cancelled</p>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="admin-table" id="orders-table">
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(order => { %>
+                <tr data-status="<%= order.status %>"
+                    data-customer="<%= (order.user ? order.user.username : '').toLowerCase() %>">
+                    <td>
+                        <p class="font-mono text-xs text-gray-400 mb-0.5">#<%= order._id.toString().slice(-10).toUpperCase() %></p>
+                        <p class="text-xs font-bold text-gray-500"><%= new Date(order.createdAt).toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'}) %></p>
+                    </td>
+                    <td>
+                        <p class="font-bold text-gray-800 text-sm"><%= order.user ? order.user.username : 'Deleted User' %></p>
+                        <p class="text-xs text-gray-400"><i class="fas fa-phone-alt text-[10px] mr-1"></i> <%= order.phone || 'N/A' %></p>
+                        <p class="text-[10px] text-gray-500 mt-1 leading-tight"><i class="fas fa-map-marker-alt mr-1"></i> <%= order.address || 'No address' %></p>
+                    </td>
+                    <td>
+                        <div class="text-xs text-gray-600 space-y-0.5">
+                            <% order.items.slice(0,2).forEach(item => { %>
+                                <p><span class="font-bold text-gray-800"><%= item.quantity %>×</span> <%= item.name %></p>
+                            <% }) %>
+                            <% if (order.items.length > 2) { %>
+                                <p class="text-gray-400 italic">+ <%= order.items.length - 2 %> more…</p>
+                            <% } %>
+                        </div>
+                    </td>
+                    <td>
+                        <p class="font-black text-green-700">₹<%= order.total.toLocaleString() %></p>
+                    </td>
+                    <td>
+                        <span class="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full
+                            <%= order.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' %>">
+                            <%= order.payment_status === 'paid' ? '✅' : '⏳' %>
+                            <%= (order.payment_status || 'pending').toUpperCase() %>
+                        </span>
+                        <p class="text-xs text-gray-400 mt-1"><%= order.payment_method || 'COD' %></p>
+                    </td>
+                    <td>
+                        <span class="status-pill status-<%= order.status %>"><%= order.status %></span>
+                    </td>
+                    <td>
+                        <form action="/admin/orders/<%= order._id %>/status" method="POST" class="flex items-center gap-2">
+                            <select name="status"
+                                    class="border border-gray-200 rounded-lg text-xs font-bold px-2 py-1.5 bg-white focus:outline-none focus:border-green-400 cursor-pointer"
+                                    onchange="this.form.submit()">
+                                <option value="pending"    <%= order.status === 'pending'   ? 'selected' : '' %>>🟡 Pending</option>
+                                <option value="shipped"    <%= order.status === 'shipped'   ? 'selected' : '' %>>🔵 Shipped</option>
+                                <option value="delivered"  <%= order.status === 'delivered' ? 'selected' : '' %>>🟢 Delivered</option>
+                                <option value="cancelled"  <%= order.status === 'cancelled' ? 'selected' : '' %>>🔴 Cancelled</option>
+                            </select>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+                <% if (orders.length === 0) { %>
+                <tr>
+                    <td colspan="7" class="text-center py-16">
+                        <div class="text-4xl mb-3">📭</div>
+                        <p class="text-gray-400 italic">No orders in the system yet.</p>
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.getElementById('page-title').textContent      = 'Order Management';
+document.getElementById('page-breadcrumb').textContent = 'Admin / Orders';
+
+function filterOrders() {
+    const status = document.getElementById('order-status-filter').value;
+    const q      = document.getElementById('order-search').value.toLowerCase();
+    document.querySelectorAll('#orders-table tbody tr[data-status]').forEach(row => {
+        const statusMatch   = !status || row.dataset.status === status;
+        const customerMatch = row.dataset.customer.includes(q);
+        row.style.display = statusMatch && customerMatch ? '' : 'none';
+    });
+}
+document.getElementById('order-status-filter').addEventListener('change', filterOrders);
+document.getElementById('order-search').addEventListener('input', filterOrders);
+</script>
+
+<%- include('../partials/admin-footer') %>

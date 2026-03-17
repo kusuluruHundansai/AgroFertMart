@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'Admin Panel' %> | AgroFertMart</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        :root { --admin-dark: #0f1923; --admin-sidebar: #141f2e; --admin-accent: #22c55e; --admin-accent2: #16a34a; }
+        body { background: #f1f5f9; font-family: 'Inter', sans-serif; }
+        h1,h2,h3,h4,h5 { font-family: 'Outfit', sans-serif; }
+
+        /* ── Sidebar ── */
+        .admin-sidebar {
+            width: 260px; min-height: 100vh; position: fixed; top: 0; left: 0; z-index: 100;
+            background: var(--admin-sidebar);
+            display: flex; flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+        }
+        .sidebar-logo {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .sidebar-logo h2 { color: #fff; font-size: 1.3rem; font-weight: 900; }
+        .sidebar-logo p  { color: #64748b; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+
+        .admin-avatar {
+            margin: 1rem 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 1rem; padding: 1rem;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .admin-avatar .av-circle {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--admin-accent), var(--admin-accent2));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 900; font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav { flex: 1; padding: 0.5rem 0.75rem; }
+        .nav-section-label {
+            color: #475569; font-size: 0.65rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            padding: 0.75rem 0.75rem 0.4rem;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1rem; border-radius: 0.75rem;
+            color: #94a3b8; font-weight: 600; font-size: 0.875rem;
+            text-decoration: none; transition: all 0.2s; margin-bottom: 2px;
+        }
+        .nav-item .nav-icon {
+            width: 34px; height: 34px; border-radius: 0.6rem;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05); transition: all 0.2s; font-size: 0.9rem;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.06); color: #e2e8f0; }
+        .nav-item:hover .nav-icon { background: rgba(34,197,94,0.15); color: var(--admin-accent); }
+        .nav-item.active { background: rgba(34,197,94,0.15); color: var(--admin-accent); }
+        .nav-item.active .nav-icon { background: var(--admin-accent); color: white; }
+
+        /* ── Main content ── */
+        .admin-main { margin-left: 260px; min-height: 100vh; }
+
+        /* ── Top Bar ── */
+        .admin-topbar {
+            background: white; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50;
+        }
+
+        /* ── Page content pad ── */
+        .admin-content { padding: 2rem; }
+
+        /* ── KPI Cards ── */
+        .kpi-card {
+            background: white; border-radius: 1.25rem; padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06); transition: all 0.3s;
+        }
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        .kpi-icon {
+            width: 52px; height: 52px; border-radius: 1rem;
+            display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+        }
+
+        /* ── Data Table ── */
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th {
+            background: #f8fafc; padding: 0.875rem 1.25rem;
+            text-align: left; font-size: 0.7rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .admin-table td {
+            padding: 1rem 1.25rem; border-bottom: 1px solid #f8fafc;
+            font-size: 0.875rem; color: #374151; transition: background 0.15s;
+        }
+        .admin-table tr:hover td { background: #f8fafc; }
+        .admin-table tr:last-child td { border-bottom: none; }
+
+        /* ── Status badges ── */
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 0.3rem;
+            padding: 0.25rem 0.75rem; border-radius: 999px;
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .status-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+        .status-pending  { background: #fef9c3; color: #a16207; }
+        .status-shipped  { background: #dbeafe; color: #1d4ed8; }
+        .status-delivered{ background: #dcfce7; color: #15803d; }
+        .status-cancelled{ background: #fee2e2; color: #b91c1c; }
+
+        /* ── Modal ── */
+        .modal-backdrop {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px); z-index: 200;
+            display: none; align-items: center; justify-content: center; padding: 1rem;
+        }
+        .modal-backdrop:not(.hidden) { display: flex; }
+        .modal-box {
+            background: white; border-radius: 1.5rem;
+            width: 100%; max-width: 560px; max-height: 90vh;
+            overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-header {
+            padding: 1.5rem; border-bottom: 1px solid #f1f5f9;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal-body { padding: 1.5rem; }
+
+        /* ── Form fields in admin ── */
+        .af-label { display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem; }
+        .af-input {
+            width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid #e2e8f0;
+            border-radius: 0.75rem; font-size: 0.875rem; background: #f8fafc;
+            font-family: 'Inter', sans-serif; transition: all 0.2s;
+        }
+        .af-input:focus { border-color: #22c55e; outline: none; box-shadow: 0 0 0 3px rgba(34,197,94,0.1); }
+
+        /* ── Quick action chips ── */
+        .quick-chip {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: white; border: 1.5px solid #e2e8f0; border-radius: 0.75rem;
+            padding: 0.6rem 1rem; font-size: 0.8rem; font-weight: 700;
+            color: #374151; text-decoration: none; transition: all 0.2s;
+        }
+        .quick-chip:hover { border-color: #22c55e; color: #16a34a; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+        .quick-chip .chip-icon { font-size: 1.1rem; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .admin-sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+            .admin-sidebar.open { transform: translateX(0); }
+            .admin-main { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Admin Sidebar ── -->
+<aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-logo">
+        <div class="flex items-center gap-2 mb-1">
+            <span class="text-2xl">🌱</span>
+            <h2>AgroFertMart</h2>
+        </div>
+        <p>Admin Control Panel</p>
+    </div>
+
+    <div class="admin-avatar">
+        <div class="flex items-center gap-3">
+            <div class="av-circle"><%= currentUser ? currentUser.username.charAt(0).toUpperCase() : 'A' %></div>
+            <div>
+                <p class="text-white text-sm font-bold"><%= currentUser ? currentUser.username : 'Admin' %></p>
+                <p class="text-green-400 text-xs font-bold">🔐 Administrator</p>
+            </div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <p class="nav-section-label">Main</p>
+        <a href="/admin/dashboard" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>">
+            <span class="nav-icon"><i class="fas fa-tachometer-alt"></i></span> Dashboard
+        </a>
+
+        <p class="nav-section-label">Inventory</p>
+        <a href="/admin/products" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'products' ? 'active' : '' %>">
+            <span class="nav-icon"><i class="fas fa-boxes"></i></span> Products
+        </a>
+
+        <p class="nav-section-label">Commerce</p>
+        <a href="/admin/orders" class="nav-item <%= typeof activePage !== 'undefined' && activePage === 'orders' ? 'active' : '' %>">
+            <span class="nav-icon"><i class="fas fa-shopping-bag"></i></span> Orders
+        </a>
+
+        <p class="nav-section-label">Account</p>
+        <a href="/" class="nav-item">
+            <span class="nav-icon"><i class="fas fa-store"></i></span> View Store
+        </a>
+        <a href="/auth/logout" class="nav-item" style="color:#f87171;">
+            <span class="nav-icon" style="background:rgba(248,113,113,0.1); color:#f87171;"><i class="fas fa-sign-out-alt"></i></span> Logout
+        </a>
+    </nav>
+
+    <div class="p-4 border-t border-white/5">
+        <p class="text-slate-600 text-xs text-center">AgroFertMart Admin v2.0</p>
+    </div>
+</aside>
+
+<!-- ── Main ── -->
+<div class="admin-main" id="admin-main">
+    <!-- Top Bar -->
+    <div class="admin-topbar">
+        <div class="flex items-center gap-3">
+            <button class="md:hidden text-gray-500 hover:text-gray-800" onclick="toggleSidebar()">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <div>
+                <h1 class="text-gray-800 font-black text-lg" id="page-title">Admin Panel</h1>
+                <p class="text-gray-400 text-xs" id="page-breadcrumb">AgroFertMart / Admin</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <% if (typeof success !== 'undefined' && success) { %>
+                <span class="bg-green-50 text-green-700 text-xs font-bold px-3 py-1 rounded-full"><i class="fas fa-check mr-1"></i><%= success %></span>
+            <% } %>
+            <% if (typeof error !== 'undefined' && error) { %>
+                <span class="bg-red-50 text-red-600 text-xs font-bold px-3 py-1 rounded-full"><i class="fas fa-exclamation mr-1"></i><%= error %></span>
+            <% } %>
+            <a href="/auth/logout" class="text-xs font-bold text-red-400 hover:text-red-600 transition flex items-center gap-1">
+                <i class="fas fa-power-off"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Content slot -->
+    <div class="admin-content">

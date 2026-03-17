@@ -1,0 +1,98 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-7xl mx-auto py-12 px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 animate-up">
+        <!-- Product Image -->
+        <div class="glass-panel p-8 agro-card border-0">
+            <div class="relative rounded-3xl overflow-hidden aspect-square shadow-2xl group">
+                <img src="<%= product.image_url.startsWith('http') || product.image_url.startsWith('/images/') ? product.image_url : '/uploads/' + product.image_url %>"
+                     alt="<%= product.name %>"
+                     onerror="this.src='/images/bg-agro.jpg'"
+                     class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+                <div class="absolute top-8 left-8 bg-accent text-primary-dark px-6 py-2 rounded-full font-black text-lg shadow-xl uppercase italic tracking-widest">
+                    <%= product.category %>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Section -->
+        <div class="flex flex-col justify-center">
+            <nav class="flex text-sm text-gray-400 font-bold uppercase tracking-widest mb-6">
+                <a href="/products" class="hover:text-green-600">Products</a>
+                <span class="mx-2">/</span>
+                <span class="text-gray-300"><%= product.name %></span>
+            </nav>
+
+            <div class="glass-panel p-12 border-0 shadow-none bg-transparent">
+                <h1 class="text-6xl font-black text-gray-800 mb-6 italic tracking-tighter"><%= product.name %></h1>
+
+                <div class="flex items-center gap-6 mb-10">
+                    <p class="text-5xl font-black text-green-700 italic">₹<%= product.price.toLocaleString() %></p>
+                    <span class="bg-green-100 text-green-700 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest">In Stock</span>
+                </div>
+
+                <div class="prose prose-green mb-12">
+                    <p class="text-gray-500 text-lg leading-relaxed font-medium">
+                        <%= product.description || 'Our premium ' + product.name + ' is carefully sourced to ensure maximum agricultural yield and sustainability. Perfect for modern farming needs.' %>
+                    </p>
+                </div>
+
+                <div class="glass-panel p-8 mb-12 border-green-50 shadow-inner bg-white/40">
+                    <div class="flex flex-wrap items-center gap-8">
+                        <div>
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 px-1">Quantity</label>
+                            <div class="flex items-center glass-panel p-1 bg-white shadow-none ring-1 ring-gray-100">
+                                <button onclick="qtyChange(-1)" class="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-green-600 transition"><i class="fas fa-minus"></i></button>
+                                <input type="number" id="buy-qty" value="1" min="1" readonly
+                                       class="w-20 text-center border-0 bg-transparent text-xl font-black text-gray-800 focus:ring-0 px-2 py-0">
+                                <button onclick="qtyChange(1)" class="w-12 h-12 flex items-center justify-center text-gray-400 hover:text-green-600 transition"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <button onclick="handleAddToCart('<%= product._id %>')" class="btn-agro flex-grow text-xl py-5 shadow-2xl">
+                            <i class="fas fa-cart-plus mr-2 text-sm"></i> ADD TO BASKET
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-gray-50 p-4 rounded-2xl flex items-center gap-3">
+                        <i class="fas fa-truck text-green-600"></i>
+                        <span class="text-xs font-bold text-gray-500 uppercase">Fast Village Delivery</span>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-2xl flex items-center gap-3">
+                        <i class="fas fa-undo text-green-600"></i>
+                        <span class="text-xs font-bold text-gray-500 uppercase">7 Day Returns</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function qtyChange(delta) {
+        const input = document.getElementById('buy-qty');
+        input.value = Math.max(1, parseInt(input.value) + delta);
+    }
+
+    function handleAddToCart(productId) {
+        const qty = document.getElementById('buy-qty').value;
+        fetch('/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId, quantity: qty })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const badge = document.getElementById('cart-badge');
+                badge.textContent = data.count;
+                badge.classList.remove('hidden');
+                alert('✅ ' + qty + ' item(s) added to cart!');
+            }
+        })
+        .catch(err => console.error(err));
+    }
+</script>
+
+<%- include('../partials/footer') %>

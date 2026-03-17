@@ -1,0 +1,17 @@
+    </div><!-- /admin-content -->
+</div><!-- /admin-main -->
+
+<script>
+function toggleSidebar() {
+    document.getElementById('admin-sidebar').classList.toggle('open');
+}
+// Close sidebar on outside click
+document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('admin-sidebar');
+    if (!sidebar.contains(e.target) && !e.target.closest('[onclick="toggleSidebar()"]')) {
+        sidebar.classList.remove('open');
+    }
+});
+</script>
+</body>
+</html>

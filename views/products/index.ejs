@@ -1,0 +1,308 @@
+<%- include('../partials/header') %>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- ── Stats Bar ───────────────────────────────────────── -->
+<div class="stats-bar">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-around gap-6">
+        <div class="stat-item">
+            <span class="stat-number" id="total-products">…</span>
+            <span class="stat-label">Products</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">4</span>
+            <span class="stat-label">Categories</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">🚚</span>
+            <span class="stat-label">Village Delivery</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">★ 4.9</span>
+            <span class="stat-label">Farmer Rating</span>
+        </div>
+    </div>
+</div>
+
+<!-- ── Page Header ─────────────────────────────────────── -->
+<div class="max-w-7xl mx-auto py-12 px-4">
+
+    <div class="text-center mb-12 reveal">
+        <h1 class="text-5xl font-extrabold text-green-900 mb-4">
+            🌿 Our <span style="background: linear-gradient(135deg,#166534,#4ade80); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Premium</span> Catalog
+        </h1>
+        <p class="text-gray-500 text-lg max-w-xl mx-auto">
+            Fertilizers, pesticides, equipment &amp; seeds — everything your farm needs, delivered to your doorstep.
+        </p>
+    </div>
+
+    <!-- Search + Filter Row -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8 reveal reveal-delay-1">
+        <div class="search-wrap">
+            <span class="search-icon"><i class="fas fa-search"></i></span>
+            <input type="text" id="search-input" placeholder="Search products…" class="w-full">
+        </div>
+        <div class="filter-tabs" id="category-tabs">
+            <button class="filter-tab active" data-cat="all">
+                <i class="fas fa-th-large mr-1"></i> All
+            </button>
+            <button class="filter-tab" data-cat="Fertilizer">
+                <i class="fas fa-seedling mr-1"></i> Fertilizers
+            </button>
+            <button class="filter-tab" data-cat="Pesticide">
+                <i class="fas fa-bug mr-1"></i> Pesticides
+            </button>
+            <button class="filter-tab" data-cat="Equipment">
+                <i class="fas fa-tools mr-1"></i> Equipment
+            </button>
+            <button class="filter-tab" data-cat="Seed">
+                <i class="fas fa-leaf mr-1"></i> Seeds
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Products ─────────────────────────────────── -->
+    <% if (Object.keys(groupedProducts).length === 0) { %>
+        <div class="empty-state">
+            <div class="empty-icon">🌱</div>
+            <p class="text-2xl font-bold text-gray-400">No products available yet.</p>
+            <p class="text-gray-400 mt-2">Please check back later or contact support.</p>
+        </div>
+    <% } else { %>
+
+        <div id="no-results" class="empty-state hidden">
+            <div class="empty-icon">🔍</div>
+            <p class="text-xl font-bold text-gray-400">No products match your search.</p>
+        </div>
+
+        <% const catIcons = {
+            Fertilizer: 'fa-seedling',
+            Pesticide:  'fa-bug',
+            Equipment:  'fa-tools',
+            Seed:       'fa-leaf'
+        };
+        const catColors = {
+            Fertilizer: 'cat-fertilizer',
+            Pesticide:  'cat-pesticide',
+            Equipment:  'cat-equipment',
+            Seed:       'cat-seed'
+        };
+        const catBars = {
+            Fertilizer: 'cat-bar-fertilizer',
+            Pesticide:  'cat-bar-pesticide',
+            Equipment:  'cat-bar-equipment',
+            Seed:       'cat-bar-seed'
+        };
+        %>
+
+        <% for(let category in groupedProducts) { %>
+            <div class="product-section mb-20 reveal" data-cat="<%= category %>">
+
+                <!-- Category heading -->
+                <div class="flex items-center gap-4 mb-10">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl text-white shadow-md"
+                         style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">
+                        <i class="fas <%= catIcons[category] || 'fa-box' %>"></i>
+                    </div>
+                    <h2 class="text-3xl font-black <%= catColors[category] || 'text-green-800' %>">
+                        <%= category %>s
+                    </h2>
+                    <span class="text-sm font-bold text-gray-400 ml-1">
+                        (<%= groupedProducts[category].length %>)
+                    </span>
+                    <div class="section-divider <%= catBars[category] || 'bg-green-100' %>"></div>
+                </div>
+
+                <!-- Product grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <% groupedProducts[category].forEach((product, idx) => { %>
+                        <div class="glass-panel agro-card overflow-hidden flex flex-col product-card-item reveal reveal-delay-<%= (idx % 4) + 1 %>"
+                             data-cat="<%= category %>"
+                             data-name="<%= product.name.toLowerCase() %>"
+                             data-desc="<%= (product.description || '').toLowerCase() %>">
+
+                            <!-- Badge -->
+                            <% if (product.badge) { %>
+                                <div class="product-badge <%= product.badge === 'NEW' ? 'badge-new' : 'badge-popular' %>">
+                                    <% if (product.badge === 'NEW') { %>
+                                        <i class="fas fa-star mr-1"></i>NEW
+                                    <% } else { %>
+                                        <i class="fas fa-fire mr-1"></i>POPULAR
+                                    <% } %>
+                                </div>
+                            <% } %>
+
+                            <!-- Image -->
+                            <div class="card-img-wrap relative h-56">
+                                <img src="<%= product.image_url && product.image_url.startsWith('http') ? product.image_url : product.image_url %>"
+                                     alt="<%= product.name %>"
+                                     class="w-full h-full object-cover"
+                                     onerror="this.src='/images/bg-agro.jpg'">
+                                <!-- Price overlay -->
+                                <div class="absolute bottom-3 right-3 price-tag">
+                                    ₹<%= product.price.toLocaleString() %>
+                                </div>
+                            </div>
+
+                            <!-- Info -->
+                            <div class="p-6 flex flex-col flex-grow">
+                                <h3 class="text-xl font-black text-gray-800 mb-2 leading-tight">
+                                    <%= product.name %>
+                                </h3>
+                                <p class="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-5 flex-grow">
+                                    <%= product.description || 'Premium quality ' + product.name + ' for your farm.' %>
+                                </p>
+
+                                <!-- Category chip -->
+                                <span class="inline-block self-start text-xs font-black uppercase tracking-wide px-3 py-1 rounded-full mb-5
+                                    <%= category === 'Fertilizer' ? 'bg-green-100 text-green-700' :
+                                        category === 'Pesticide'  ? 'bg-red-100 text-red-700' :
+                                        category === 'Equipment'  ? 'bg-yellow-100 text-yellow-700' :
+                                                                     'bg-blue-100 text-blue-700' %>">
+                                    <%= category %>
+                                </span>
+
+                                <div class="space-y-3 mt-auto">
+                                    <button onclick="addToCartEnhanced('<%= product._id %>', '<%= product.name %>')"
+                                            class="btn-agro w-full text-sm group">
+                                        <i class="fas fa-cart-plus transition-transform group-hover:rotate-12"></i>
+                                        Add to Cart
+                                    </button>
+                                    <a href="/products/<%= product._id %>"
+                                       class="block text-center text-green-600 font-black hover:text-green-800 transition text-sm uppercase tracking-wide">
+                                        View Details <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        <% } %>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>
+
+<!-- ── Dynamic JS ───────────────────────────────────────── -->
+<script>
+// ── Scroll-reveal ────────────────────────────────────
+(function() {
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+})();
+
+// ── Stats counter ─────────────────────────────────────
+(function() {
+    const totalEl = document.getElementById('total-products');
+    const count   = document.querySelectorAll('.product-card-item').length;
+    let   current = 0;
+    const step    = Math.ceil(count / 30);
+    const timer   = setInterval(() => {
+        current += step;
+        if (current >= count) { current = count; clearInterval(timer); }
+        totalEl.textContent = current;
+    }, 40);
+})();
+
+// ── Toast notification ────────────────────────────────
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast     = document.createElement('div');
+    const icon      = type === 'success' ? '✅' : '❌';
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 400);
+    }, 3000);
+}
+
+// ── Enhanced Add to Cart ──────────────────────────────
+function addToCartEnhanced(productId, productName) {
+    const buttons = document.querySelectorAll(`[onclick*="${productId}"]`);
+    buttons.forEach(b => {
+        b.disabled = true;
+        b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding…';
+    });
+
+    fetch('/cart/add', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ productId })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            const badge = document.getElementById('cart-badge');
+            if (badge) {
+                badge.textContent = data.count;
+                badge.classList.remove('hidden');
+                badge.classList.add('animate-bounce');
+                setTimeout(() => badge.classList.remove('animate-bounce'), 1000);
+            }
+            showToast(`🛒 "${productName}" added to cart!`, 'success');
+        } else {
+            showToast(data.message || 'Could not add to cart.', 'error');
+        }
+    })
+    .catch(() => showToast('Network error! Check your connection.', 'error'))
+    .finally(() => {
+        buttons.forEach(b => {
+            b.disabled = false;
+            b.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+        });
+    });
+}
+
+// ── Filter Tabs ───────────────────────────────────────
+const tabs     = document.querySelectorAll('.filter-tab');
+const sections = document.querySelectorAll('.product-section');
+const cards    = document.querySelectorAll('.product-card-item');
+
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const cat = tab.dataset.cat;
+        sections.forEach(sec => {
+            sec.classList.toggle('hidden', cat !== 'all' && sec.dataset.cat !== cat);
+        });
+        updateNoResults();
+    });
+});
+
+// ── Search ────────────────────────────────────────────
+document.getElementById('search-input').addEventListener('input', function() {
+    const q   = this.value.toLowerCase().trim();
+    const cat = document.querySelector('.filter-tab.active').dataset.cat;
+
+    sections.forEach(sec => {
+        let sectionVisible = false;
+        sec.querySelectorAll('.product-card-item').forEach(card => {
+            const nameMatch = card.dataset.name.includes(q);
+            const descMatch = card.dataset.desc.includes(q);
+            const catMatch  = cat === 'all' || card.dataset.cat === cat;
+            const show      = catMatch && (q === '' || nameMatch || descMatch);
+            card.classList.toggle('hidden', !show);
+            if (show) sectionVisible = true;
+        });
+        sec.classList.toggle('hidden', !sectionVisible);
+    });
+    updateNoResults();
+});
+
+function updateNoResults() {
+    const anyVisible = [...sections].some(s => !s.classList.contains('hidden'));
+    document.getElementById('no-results').classList.toggle('hidden', anyVisible);
+}
+</script>

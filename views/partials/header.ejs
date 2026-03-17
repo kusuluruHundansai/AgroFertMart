@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : 'AgroFertMart' %></title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <!-- ═══════════════════════════════════════════════
+         PREMIUM NAVBAR
+         ═══════════════════════════════════════════════ -->
+    <nav class="premium-nav" id="premium-nav">
+        <div class="nav-inner">
+            <!-- Logo -->
+            <a href="/" class="nav-logo" id="nav-logo">
+                <span class="nav-logo-icon">🌱</span>
+                <span class="nav-logo-text">AgroFert<span class="nav-logo-accent">Mart</span></span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="nav-desktop">
+                <div class="nav-links">
+                    <a href="/" class="nav-item" data-page="home">
+                        <span class="nav-item-text">Home</span>
+                    </a>
+                    <a href="/products" class="nav-item" data-page="products">
+                        <span class="nav-item-text">Products</span>
+                    </a>
+                    <a href="/cart" class="nav-item nav-item-cart" data-page="cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="nav-item-text">Cart</span>
+                        <span id="cart-badge" class="nav-cart-badge <%= cart.count === 0 ? 'hidden' : '' %>">
+                            <%= cart.count %>
+                        </span>
+                    </a>
+                    <% if (currentUser) { %>
+                        <a href="/orders/my-orders" class="nav-item" data-page="orders">
+                            <span class="nav-item-text">My Orders</span>
+                        </a>
+                        <% if (currentUser.role === 'admin') { %>
+                            <a href="/admin/dashboard" class="nav-admin-chip">
+                                <i class="fas fa-bolt"></i> Admin
+                            </a>
+                        <% } %>
+                    <% } %>
+                </div>
+
+                <!-- Auth Section -->
+                <div class="nav-auth">
+                    <% if (currentUser) { %>
+                        <div class="nav-user-pill">
+                            <span class="nav-user-avatar">🌾</span>
+                            <span class="nav-user-name"><%= currentUser.username %></span>
+                        </div>
+                        <a href="/auth/logout" class="nav-logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    <% } else { %>
+                        <a href="/auth/login" class="nav-login-link">Login</a>
+                        <a href="/auth/signup" class="nav-signup-btn">
+                            <i class="fas fa-user-plus"></i> Sign Up
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span class="hamburger-line line-1"></span>
+                <span class="hamburger-line line-2"></span>
+                <span class="hamburger-line line-3"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobile-overlay"></div>
+
+    <!-- Mobile Slide-in Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <a href="/" class="nav-logo">
+                <span class="nav-logo-icon">🌱</span>
+                <span class="nav-logo-text">AgroFert<span class="nav-logo-accent">Mart</span></span>
+            </a>
+        </div>
+
+        <div class="mobile-menu-links">
+            <a href="/" class="mobile-link" data-page="home">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="/products" class="mobile-link" data-page="products">
+                <i class="fas fa-store"></i> Products
+            </a>
+            <a href="/cart" class="mobile-link" data-page="cart">
+                <i class="fas fa-shopping-bag"></i> Cart
+                <span class="mobile-cart-badge <%= cart.count === 0 ? 'hidden' : '' %>"><%= cart.count %></span>
+            </a>
+            <% if (currentUser) { %>
+                <a href="/orders/my-orders" class="mobile-link" data-page="orders">
+                    <i class="fas fa-box"></i> My Orders
+                </a>
+                <% if (currentUser.role === 'admin') { %>
+                    <a href="/admin/dashboard" class="mobile-link mobile-link-admin">
+                        <i class="fas fa-bolt"></i> Admin Portal
+                    </a>
+                <% } %>
+            <% } %>
+        </div>
+
+        <div class="mobile-menu-footer">
+            <% if (currentUser) { %>
+                <div class="mobile-user-info">
+                    <span class="mobile-user-avatar">🌾</span>
+                    <span class="mobile-user-name"><%= currentUser.username %></span>
+                </div>
+                <a href="/auth/logout" class="mobile-logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            <% } else { %>
+                <a href="/auth/login" class="mobile-login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="/auth/signup" class="mobile-signup-btn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </a>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Navbar JavaScript -->
+    <script>
+    (function() {
+        const nav = document.getElementById('premium-nav');
+        const hamburger = document.getElementById('nav-hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('mobile-overlay');
+        let isOpen = false;
+
+        // ── Scroll shrink ──────────────────────────────
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            nav.classList.toggle('nav-scrolled', scrollY > 30);
+            lastScroll = scrollY;
+        }, { passive: true });
+
+        // ── Mobile menu toggle ─────────────────────────
+        function toggleMenu() {
+            isOpen = !isOpen;
+            hamburger.classList.toggle('is-active', isOpen);
+            hamburger.setAttribute('aria-expanded', isOpen);
+            mobileMenu.classList.toggle('is-open', isOpen);
+            overlay.classList.toggle('is-visible', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
+
+        hamburger.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        // Close on link click
+        mobileMenu.querySelectorAll('.mobile-link, .mobile-login-btn, .mobile-signup-btn, .mobile-logout-btn').forEach(link => {
+            link.addEventListener('click', () => {
+                if (isOpen) toggleMenu();
+            });
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isOpen) toggleMenu();
+        });
+
+        // ── Active page highlight ──────────────────────
+        const path = window.location.pathname;
+        document.querySelectorAll('[data-page]').forEach(link => {
+            const page = link.dataset.page;
+            const isActive = (page === 'home' && path === '/') ||
+                             (page === 'products' && path.startsWith('/products')) ||
+                             (page === 'cart' && path === '/cart') ||
+                             (page === 'orders' && path.startsWith('/orders'));
+            if (isActive) link.classList.add('is-active');
+        });
+
+        // ── Nav entry animation ────────────────────────
+        nav.classList.add('nav-loaded');
+    })();
+    </script>
+
+    <!-- Success/Error Alerts -->
+    <div class="max-w-4xl mx-auto mt-4 px-4">
+        <% if (success) { %>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-xl shadow-sm mb-4" style="animation: fadeInUp 0.4s ease">
+                <p><%= success %></p>
+            </div>
+        <% } %>
+        <% if (error) { %>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-xl shadow-sm mb-4" style="animation: fadeInUp 0.4s ease">
+                <p><%= error %></p>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- Content Slot -->

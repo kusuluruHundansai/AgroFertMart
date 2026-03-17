@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join AgroFertMart – Create Farmer Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        body { background: #0a1f0e; min-height: 100vh; }
+        .bg-particles {
+            position: fixed; inset: 0; z-index: 0;
+            background: radial-gradient(ellipse at 20% 50%, rgba(22,163,74,0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 20%, rgba(16,185,129,0.1) 0%, transparent 50%);
+        }
+        .auth-wrapper { position: relative; z-index: 10; min-height: 100vh; display: flex; }
+
+        .left-panel {
+            width: 45%; background: url('/images/agri-bg.jpg') center/cover no-repeat;
+            position: relative; display: flex; flex-direction: column;
+            justify-content: center; padding: 3rem;
+        }
+        .left-panel::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(5,46,22,0.88) 0%, rgba(20,83,45,0.75) 100%);
+        }
+        .left-content { position: relative; z-index: 1; color: white; }
+
+        .right-panel {
+            width: 55%; display: flex; align-items: center;
+            justify-content: center; padding: 2rem;
+            background: rgba(255,255,255,0.04); backdrop-filter: blur(20px);
+            overflow-y: auto;
+        }
+
+        .auth-card {
+            width: 100%; max-width: 480px;
+            background: rgba(255,255,255,0.97);
+            border-radius: 2rem; padding: 2.5rem;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+            margin: 2rem 0;
+        }
+
+        .input-group { position: relative; margin-bottom: 1rem; }
+        .input-group .icon {
+            position: absolute; left: 1rem; top: 50%;
+            transform: translateY(-50%); color: #9ca3af;
+            transition: color 0.2s; font-size: 0.9rem;
+        }
+        .input-group input, .input-group select {
+            width: 100% !important; padding: 0.8rem 1rem 0.8rem 2.75rem !important;
+            border: 2px solid #e5e7eb !important; border-radius: 0.875rem !important;
+            font-size: 0.875rem !important; background: #fafafa !important;
+            font-family: 'Inter', sans-serif; transition: all 0.25s ease !important;
+            appearance: none;
+        }
+        .input-group input:focus, .input-group select:focus {
+            border-color: #16a34a !important;
+            box-shadow: 0 0 0 3px rgba(22,163,74,0.1) !important;
+        }
+        .input-group:focus-within .icon { color: #16a34a; }
+
+        .strength-bar { height: 4px; border-radius: 99px; margin-top: 6px; background: #e5e7eb; overflow: hidden; }
+        .strength-fill { height: 100%; border-radius: 99px; width: 0; transition: width 0.4s, background 0.4s; }
+
+        .step-indicator {
+            display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem;
+        }
+        .step-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #e5e7eb; transition: all 0.3s;
+        }
+        .step-dot.active { background: #16a34a; transform: scale(1.3); }
+
+        .benefit-tag {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            background: rgba(22,163,74,0.15); color: #86efac;
+            padding: 0.3rem 0.75rem; border-radius: 999px;
+            font-size: 0.75rem; font-weight: 700; margin: 0.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .left-panel { display: none; }
+            .right-panel { width: 100%; background: #0a1f0e; }
+        }
+    </style>
+</head>
+<body>
+<div class="bg-particles"></div>
+
+<div class="auth-wrapper">
+    <!-- Left Panel -->
+    <div class="left-panel">
+        <div class="left-content">
+            <a href="/" class="text-green-400 text-sm font-bold uppercase tracking-widest flex items-center gap-2 mb-10 hover:text-white transition">
+                <i class="fas fa-arrow-left"></i> Back to Store
+            </a>
+            <h2 class="text-4xl font-black text-white mb-4 leading-tight">
+                Start Your Digital Farm Journey 🌱
+            </h2>
+            <p class="text-green-200 mb-8 leading-relaxed">
+                Join thousands of progressive farmers across India who use AgroFertMart to source the finest inputs and maximise their crop yield.
+            </p>
+            <div class="flex flex-wrap gap-2 mb-10">
+                <span class="benefit-tag"><i class="fas fa-seedling"></i> Premium Seeds</span>
+                <span class="benefit-tag"><i class="fas fa-flask"></i> Quality Fertilizers</span>
+                <span class="benefit-tag"><i class="fas fa-bug"></i> Effective Pesticides</span>
+                <span class="benefit-tag"><i class="fas fa-tools"></i> Modern Equipment</span>
+                <span class="benefit-tag"><i class="fas fa-truck"></i> Village Delivery</span>
+                <span class="benefit-tag"><i class="fas fa-shield-alt"></i> Secure Payments</span>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-5 border border-green-700/30">
+                <p class="text-green-300 text-xs font-black uppercase tracking-widest mb-2">📣 Farmer Testimonial</p>
+                <p class="text-white italic text-sm leading-relaxed">"AgroFertMart delivered DAP and NPK fertilizers right to my village. Saved me 3 trips to the city and 2 days of work!"</p>
+                <p class="text-green-400 text-xs font-bold mt-2">— Ramesh Patel, Kheda District</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+        <div class="auth-card">
+            <div class="text-center mb-5">
+                <div class="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center text-3xl mx-auto mb-3">🌾</div>
+                <h1 class="text-2xl font-black text-gray-800">Create Farmer Account</h1>
+                <p class="text-gray-500 text-sm mt-1">Free registration · No hidden charges</p>
+            </div>
+
+            <!-- Alert -->
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm font-medium flex items-center gap-2 mb-4">
+                <i class="fas fa-exclamation-triangle"></i> <%= error %>
+            </div>
+            <% } %>
+
+            <form action="/auth/signup" method="POST" id="signup-form">
+                <!-- Row 1: username + email -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="input-group">
+                        <i class="fas fa-user icon"></i>
+                        <input type="text" name="username" required
+                               value="<%= typeof body !== 'undefined' ? body.username : '' %>"
+                               placeholder="Username" minlength="3">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-phone icon"></i>
+                        <input type="text" name="phone" placeholder="Mobile (optional)">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-envelope icon"></i>
+                    <input type="email" name="email" required
+                           value="<%= typeof body !== 'undefined' ? body.email : '' %>"
+                           placeholder="Email address">
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-map-marker-alt icon"></i>
+                    <select name="state">
+                        <option value="">Select State (optional)</option>
+                        <option>Andhra Pradesh</option><option>Bihar</option><option>Gujarat</option>
+                        <option>Haryana</option><option>Karnataka</option><option>Kerala</option>
+                        <option>Madhya Pradesh</option><option>Maharashtra</option><option>Odisha</option>
+                        <option>Punjab</option><option>Rajasthan</option><option>Tamil Nadu</option>
+                        <option>Telangana</option><option>Uttar Pradesh</option><option>West Bengal</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock icon"></i>
+                    <input type="password" name="password" id="pw1" required
+                           placeholder="Password (min 6 chars)" minlength="6"
+                           oninput="checkStrength(this.value)">
+                </div>
+                <!-- Password strength bar -->
+                <div class="strength-bar mb-3">
+                    <div class="strength-fill" id="strength-fill"></div>
+                </div>
+                <p class="text-xs text-gray-400 mb-3 -mt-2" id="strength-text"></p>
+
+                <div class="input-group">
+                    <i class="fas fa-check-circle icon"></i>
+                    <input type="password" name="confirm_password" id="pw2" required
+                           placeholder="Confirm password">
+                </div>
+
+                <!-- Terms -->
+                <label class="flex items-start gap-2 mb-4 cursor-pointer">
+                    <input type="checkbox" required class="mt-1 rounded">
+                    <span class="text-xs text-gray-500">
+                        I agree to the <a href="#" class="text-green-700 font-bold hover:underline">Terms of Service</a>
+                        and <a href="#" class="text-green-700 font-bold hover:underline">Privacy Policy</a>
+                    </span>
+                </label>
+
+                <button type="submit" class="w-full py-3 rounded-xl text-white font-black text-base
+                       bg-gradient-to-r from-green-800 to-green-500
+                       shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fas fa-user-plus"></i> CREATE MY ACCOUNT
+                </button>
+            </form>
+
+            <div class="text-center mt-5 pt-5 border-t border-gray-100">
+                <p class="text-gray-500 text-sm">Already have an account?</p>
+                <a href="/auth/login" class="inline-block mt-1 text-green-700 font-bold text-sm hover:text-green-900 transition">
+                    Sign In Instead <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function checkStrength(val) {
+    const fill = document.getElementById('strength-fill');
+    const text = document.getElementById('strength-text');
+    let score = 0;
+    if (val.length >= 6)  score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    const levels = [
+        { w: '20%', c: '#ef4444', t: 'Very Weak' },
+        { w: '40%', c: '#f97316', t: 'Weak' },
+        { w: '60%', c: '#eab308', t: 'Fair' },
+        { w: '80%', c: '#22c55e', t: 'Strong' },
+        { w: '100%', c: '#16a34a', t: '💪 Very Strong' }
+    ];
+    const lvl = levels[Math.max(0, score - 1)] || levels[0];
+    fill.style.width  = val.length ? lvl.w : '0';
+    fill.style.background = lvl.c;
+    text.textContent = val.length ? `Password strength: ${lvl.t}` : '';
+    text.style.color = lvl.c;
+}
+
+document.getElementById('signup-form').addEventListener('submit', function(e) {
+    const pw1 = document.getElementById('pw1').value;
+    const pw2 = document.getElementById('pw2').value;
+    if (pw1 !== pw2) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+    }
+});
+</script>
+</body>
+</html>

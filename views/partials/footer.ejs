@@ -1,0 +1,60 @@
+    <footer class="bg-gray-900 text-white mt-12 py-16 px-4">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div>
+                <h3 class="text-3xl font-black mb-6 italic text-green-500">🌱 AgroFertMart</h3>
+                <p class="text-gray-400 leading-relaxed font-bold">Quality agricultural products directly to your doorstep. Supporting farmers with the best fertilizers, pesticides, and tools since 2026.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-6 uppercase tracking-widest text-green-600">Quick Links</h3>
+                <ul class="space-y-4 text-gray-300 font-black uppercase text-xs tracking-tighter">
+                    <li><a href="/products" class="hover:text-green-500 transition">Shop Catalog</a></li>
+                    <li><a href="/auth/login" class="hover:text-green-500 transition">Account Portal</a></li>
+                    <li><a href="/cart" class="hover:text-green-500 transition">My Selection</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Contact Us</h3>
+                <p class="text-green-200 italic">"Empowering Agriculture for a Greener Tomorrow"</p>
+                <div class="mt-4 flex space-x-4">
+                   <a href="#" class="text-2xl hover:text-green-400"><i class="fab fa-facebook"></i></a>
+                   <a href="#" class="text-2xl hover:text-green-400"><i class="fab fa-instagram"></i></a>
+                   <a href="#" class="text-2xl hover:text-green-400"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-10 pt-6 border-t border-green-800 text-green-400 text-sm">
+            &copy; 2026 AgroFertMart. Built with Node.js & MongoDB Atlas.
+        </div>
+    </footer>
+
+    <script>
+        // Global Cart Add function (AJAX)
+        function addToCart(productId) {
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const badge = document.getElementById('cart-badge');
+                    badge.textContent = data.count;
+                    badge.classList.remove('hidden');
+                    // Add bounce effect
+                    badge.classList.add('animate-bounce');
+                    setTimeout(() => badge.classList.remove('animate-bounce'), 1000);
+                    
+                    alert('✅ Product added to cart successfully!');
+                } else {
+                    alert('❌ Failed to add product: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('❌ Network error! Check your connection.');
+            });
+        }
+    </script>
+</body>
+</html>

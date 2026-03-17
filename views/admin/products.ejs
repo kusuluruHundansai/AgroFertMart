@@ -1,0 +1,314 @@
+<%- include('../partials/admin-header', { activePage: 'products' }) %>
+
+<!-- Header row -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <div>
+        <h2 class="text-2xl font-black text-gray-800">📦 Product Inventory</h2>
+        <p class="text-sm text-gray-400 mt-1"><%= products.length %> products in database</p>
+    </div>
+    <div class="flex gap-3">
+        <!-- Search -->
+        <div class="relative">
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+            <input type="text" id="prod-search" placeholder="Search products…"
+                   class="pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:border-green-400 w-56">
+        </div>
+        <!-- Category filter -->
+        <select id="cat-filter" class="border border-gray-200 rounded-xl text-sm px-3 py-2 bg-white focus:outline-none focus:border-green-400">
+            <option value="">All Categories</option>
+            <option>Fertilizer</option>
+            <option>Pesticide</option>
+            <option>Equipment</option>
+            <option>Seed</option>
+        </select>
+        <!-- Add button -->
+        <button onclick="openModal('add-modal')"
+                class="flex items-center gap-2 bg-gradient-to-r from-green-800 to-green-500 text-white px-4 py-2 rounded-xl font-bold text-sm shadow hover:shadow-lg transition">
+            <i class="fas fa-plus"></i> Add Product
+        </button>
+    </div>
+</div>
+
+<!-- Product Table -->
+<div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="admin-table" id="products-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Badge</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach(product => { %>
+                <tr data-name="<%= product.name.toLowerCase() %>" data-cat="<%= product.category %>">
+                    <td>
+                        <div class="flex items-center gap-3">
+                            <img src="<%= product.image_url && product.image_url.startsWith('http') ? product.image_url : product.image_url %>"
+                                 alt="<%= product.name %>"
+                                 onerror="this.src='/images/bg-agro.jpg'"
+                                 class="w-12 h-12 rounded-xl object-cover border border-gray-100 flex-shrink-0">
+                            <div>
+                                <p class="font-bold text-gray-800 text-sm"><%= product.name %></p>
+                                <p class="text-xs text-gray-400 line-clamp-1 max-w-xs">
+                                    <%= product.description || 'No description' %>
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="inline-block text-xs font-bold px-3 py-1 rounded-full
+                            <%= product.category === 'Fertilizer' ? 'bg-green-100 text-green-700' :
+                                product.category === 'Pesticide'  ? 'bg-red-100 text-red-700' :
+                                product.category === 'Equipment'  ? 'bg-yellow-100 text-yellow-700' :
+                                                                     'bg-blue-100 text-blue-700' %>">
+                            <%= product.category %>
+                        </span>
+                    </td>
+                    <td><span class="font-bold text-green-700">₹<%= product.price.toLocaleString() %></span></td>
+                    <td>
+                        <% if (product.badge === 'NEW') { %>
+                            <span class="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-600">
+                                ⭐ NEW
+                            </span>
+                        <% } else if (product.badge === 'POPULAR') { %>
+                            <span class="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-600">
+                                🔥 POPULAR
+                            </span>
+                        <% } else { %>
+                            <span class="text-gray-300 text-xs">—</span>
+                        <% } %>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <button onclick="openEditModal('<%= product._id %>', '<%= product.name.replace(/'/g, "\\'") %>', '<%= product.category %>', '<%= product.price %>', '<%= product.badge || '' %>', '<%= (product.description || '').replace(/\r?\n/g, '\\n').replace(/'/g, "\\'") %>')"
+                                    class="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </button>
+                            <button onclick="deleteProduct('<%= product._id %>', '<%= product.name.replace(/'/g, "\\'") %>')"
+                                    class="px-3 py-1.5 rounded-lg bg-red-50 text-red-500 text-xs font-bold hover:bg-red-100 transition">
+                                <i class="fas fa-trash mr-1"></i> Delete
+                            </button>
+                            <a href="/products/<%= product._id %>" target="_blank"
+                               class="px-3 py-1.5 rounded-lg bg-gray-50 text-gray-500 text-xs font-bold hover:bg-gray-100 transition">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                <% }) %>
+                <% if (products.length === 0) { %>
+                <tr>
+                    <td colspan="5" class="text-center text-gray-400 py-16 italic">
+                        <div class="text-4xl mb-3">📭</div>
+                        No products in inventory. Add one!
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ── ADD Product Modal ── -->
+<div id="add-modal" class="modal-backdrop hidden">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 class="font-black text-gray-800 text-xl">➕ Add New Product</h3>
+            <button onclick="closeModal('add-modal')"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-400 transition">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form action="/admin/products/add" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="af-label">Product Name *</label>
+                        <input type="text" name="name" class="af-input" required placeholder="e.g. Urea Fertilizer">
+                    </div>
+                    <div>
+                        <label class="af-label">Category *</label>
+                        <select name="category" class="af-input" required>
+                            <option value="Fertilizer">🌿 Fertilizer</option>
+                            <option value="Pesticide">🐛 Pesticide</option>
+                            <option value="Equipment">🔧 Equipment</option>
+                            <option value="Seed">🌱 Seed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="af-label">Price (₹) *</label>
+                        <input type="number" name="price" class="af-input" required min="1" placeholder="450">
+                    </div>
+                    <div>
+                        <label class="af-label">Badge Label</label>
+                        <select name="badge" class="af-input">
+                            <option value="">None</option>
+                            <option value="NEW">⭐ NEW</option>
+                            <option value="POPULAR">🔥 POPULAR</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="af-label">Description</label>
+                    <textarea name="description" class="af-input" rows="3" placeholder="Brief description of the product…"></textarea>
+                </div>
+                <div>
+                    <label class="af-label">Product Image</label>
+                    <input type="file" name="image" class="af-input" accept="image/*"
+                           style="padding:0.35rem 0.5rem; background:white;">
+                    <p class="text-xs text-gray-400 mt-1">Leave blank to use a default image.</p>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('add-modal')"
+                            class="flex-1 py-3 rounded-xl border border-gray-200 text-gray-500 font-bold text-sm hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex-1 py-3 rounded-xl bg-gradient-to-r from-green-800 to-green-500 text-white font-black text-sm shadow hover:shadow-lg transition">
+                        <i class="fas fa-plus mr-2"></i> ADD PRODUCT
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── EDIT Product Modal ── -->
+<div id="edit-modal" class="modal-backdrop hidden">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 class="font-black text-gray-800 text-xl">✏️ Edit Product</h3>
+            <button onclick="closeModal('edit-modal')"
+                    class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-400 transition">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="edit-form" action="" method="POST" class="space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="af-label">Product Name *</label>
+                        <input type="text" name="name" id="edit-name" class="af-input" required>
+                    </div>
+                    <div>
+                        <label class="af-label">Category *</label>
+                        <select name="category" id="edit-category" class="af-input">
+                            <option value="Fertilizer">🌿 Fertilizer</option>
+                            <option value="Pesticide">🐛 Pesticide</option>
+                            <option value="Equipment">🔧 Equipment</option>
+                            <option value="Seed">🌱 Seed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="af-label">Price (₹) *</label>
+                        <input type="number" name="price" id="edit-price" class="af-input" required min="1">
+                    </div>
+                    <div>
+                        <label class="af-label">Badge Label</label>
+                        <select name="badge" id="edit-badge" class="af-input">
+                            <option value="">None</option>
+                            <option value="NEW">⭐ NEW</option>
+                            <option value="POPULAR">🔥 POPULAR</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="af-label">Description</label>
+                    <textarea name="description" id="edit-desc" class="af-input" rows="3"></textarea>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('edit-modal')"
+                            class="flex-1 py-3 rounded-xl border border-gray-200 text-gray-500 font-bold text-sm hover:bg-gray-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex-1 py-3 rounded-xl bg-gradient-to-r from-blue-800 to-blue-500 text-white font-black text-sm shadow hover:shadow-lg transition">
+                        <i class="fas fa-save mr-2"></i> SAVE CHANGES
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div id="delete-modal" class="modal-backdrop hidden">
+    <div class="modal-box" style="max-width:400px;">
+        <div class="modal-body text-center py-8">
+            <div class="text-5xl mb-4">🗑️</div>
+            <h3 class="text-xl font-black text-gray-800 mb-2">Delete Product?</h3>
+            <p class="text-gray-500 text-sm mb-6" id="delete-product-name">This product will be permanently removed.</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeModal('delete-modal')"
+                        class="px-6 py-2 rounded-xl border border-gray-200 text-gray-500 font-bold text-sm hover:bg-gray-50 transition">
+                    Cancel
+                </button>
+                <form id="delete-form" action="" method="POST" style="display:inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit"
+                            class="px-6 py-2 rounded-xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 transition shadow">
+                        Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('page-title').textContent      = 'Product Inventory';
+document.getElementById('page-breadcrumb').textContent = 'Admin / Products';
+
+function openModal(id)  { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+// Open edit modal with data
+function openEditModal(id, name, cat, price, badge, desc) {
+    document.getElementById('edit-form').action  = `/admin/products/${id}/edit`;
+    document.getElementById('edit-name').value   = name;
+    document.getElementById('edit-price').value  = price;
+    document.getElementById('edit-desc').value   = desc;
+    document.getElementById('edit-badge').value  = badge;
+    const catSel = document.getElementById('edit-category');
+    for (let opt of catSel.options) opt.selected = opt.value === cat;
+    openModal('edit-modal');
+}
+
+// Open delete modal
+function deleteProduct(id, name) {
+    document.getElementById('delete-product-name').textContent = `"${name}" will be permanently removed.`;
+    document.getElementById('delete-form').action = `/admin/products/${id}/delete`;
+    openModal('delete-modal');
+}
+
+// Live search
+document.getElementById('prod-search').addEventListener('input', filterTable);
+document.getElementById('cat-filter').addEventListener('change', filterTable);
+
+function filterTable() {
+    const q   = document.getElementById('prod-search').value.toLowerCase();
+    const cat = document.getElementById('cat-filter').value;
+    document.querySelectorAll('#products-table tbody tr[data-name]').forEach(row => {
+        const nameMatch = row.dataset.name.includes(q);
+        const catMatch  = !cat || row.dataset.cat === cat;
+        row.style.display = nameMatch && catMatch ? '' : 'none';
+    });
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal-backdrop').forEach(bd => {
+    bd.addEventListener('click', function(e) {
+        if (e.target === bd) bd.classList.add('hidden');
+    });
+});
+</script>
+
+<%- include('../partials/admin-footer') %>
