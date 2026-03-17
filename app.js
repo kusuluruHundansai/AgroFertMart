@@ -135,7 +135,6 @@ const productRoutes = require('./routes/products');
 const cartRoutes    = require('./routes/cart');
 const orderRoutes   = require('./routes/orders');
 const adminRoutes   = require('./routes/admin');
-const paymentRoutes = require('./routes/payment');
 
 app.get('/', (req, res) => {
   res.render('home', { title: 'AgroFertMart - Buy Fertilizers & Pesticides Online' });
@@ -146,7 +145,6 @@ app.use('/products', productRoutes);
 app.use('/cart', cartRoutes);
 app.use('/orders', orderRoutes);
 app.use('/admin', adminRoutes);
-app.use('/payment', paymentRoutes);
 
 // ─── 404 Handler ──────────────────────────────────────────────────
 app.use((req, res) => {

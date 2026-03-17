@@ -46,11 +46,7 @@ router.post('/place', async (req, res) => {
 
     await order.save();
 
-    if (payment_method === 'pay_now') {
-      return res.redirect(`/payment/process/${order._id}`);
-    }
-
-    // Clear cart for Pay on Delivery
+    // Clear cart for Pay on Delivery (Default)
     req.session.cart = { items: [], total: 0, count: 0 };
     req.session.success = "Order placed successfully! We will contact you soon.";
     res.redirect('/orders/my-orders');

@@ -16,7 +16,12 @@
     "type": "git",
     "url": "git+https://github.com/SandeepAngala/AgroFertMart.git"
   },
-  "keywords": ["agriculture", "ecommerce", "fertilizer", "nodejs"],
+  "keywords": [
+    "agriculture",
+    "ecommerce",
+    "fertilizer",
+    "nodejs"
+  ],
   "author": "Sandeep Angala",
   "license": "ISC",
   "bugs": {
@@ -37,8 +42,7 @@
     "method-override": "^3.0.0",
     "mongoose": "^9.3.0",
     "morgan": "^1.10.1",
-    "multer": "^2.1.1",
-    "razorpay": "^2.9.6"
+    "multer": "^2.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
