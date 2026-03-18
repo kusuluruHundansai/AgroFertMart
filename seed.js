@@ -297,7 +297,7 @@ const products = [
     description: "Elite F1 hybrid seeds optimised for high productivity and disease resistance in tropical climates.",
     price: 120,
     category: "Seed",
-    image_url: "https://images.unsplash.com/photo-1588252327553-65773663a778?q=80&w=800&auto=format&fit=crop",
+    image_url: "https://images.unsplash.com/photo-1518977676601-b53f02bad67b?q=80&w=800&auto=format&fit=crop",
     badge: "POPULAR"
   },
   {
@@ -305,14 +305,14 @@ const products = [
     description: "Popular high-yield wheat variety resistant to heat and yellow rust. High protein content.",
     price: 950,
     category: "Seed",
-    image_url: "https://images.unsplash.com/photo-1621245781475-e8d11df8353d?q=80&w=800&auto=format&fit=crop"
+    image_url: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=800&auto=format&fit=crop"
   },
   {
     name: "African Bird Eye Chilli Seeds",
     description: "Extremely pungent and high-yielding chilli variety. Drought resistant and easy to maintain.",
     price: 75,
     category: "Seed",
-    image_url: "https://images.unsplash.com/photo-1615485290382-441e4d0c9cb5?q=80&w=800&auto=format&fit=crop"
+    image_url: "https://images.unsplash.com/photo-1598965402089-897ce52e8355?q=80&w=800&auto=format&fit=crop"
   },
   {
     name: "Hybrid Sweet Corn Seeds",
@@ -365,7 +365,7 @@ const products = [
     description: "High-efficiency solar dryer for chilies, herbs, and grains. Reduces post-harvest loss while maintaining nutrients.",
     price: 15600,
     category: "Equipment",
-    image_url: "/images/solar-dryer.png"
+    image_url: "https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?q=80&w=800&auto=format&fit=crop"
   },
   {
     name: "Botanical Organic Pesticide",
