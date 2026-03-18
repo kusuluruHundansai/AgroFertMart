@@ -297,7 +297,7 @@ const products = [
     description: "Elite F1 hybrid seeds optimised for high productivity and disease resistance in tropical climates.",
     price: 120,
     category: "Seed",
-    image_url: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60",
+    image_url: "https://images.unsplash.com/photo-1588252327553-65773663a778?q=80&w=800&auto=format&fit=crop",
     badge: "POPULAR"
   },
   {
@@ -305,21 +305,21 @@ const products = [
     description: "Popular high-yield wheat variety resistant to heat and yellow rust. High protein content.",
     price: 950,
     category: "Seed",
-    image_url: "https://images.unsplash.com/photo-1501436513145-30f24e19fcc8?w=500&auto=format&fit=crop&q=60"
+    image_url: "https://images.unsplash.com/photo-1621245781475-e8d11df8353d?q=80&w=800&auto=format&fit=crop"
   },
   {
     name: "African Bird Eye Chilli Seeds",
     description: "Extremely pungent and high-yielding chilli variety. Drought resistant and easy to maintain.",
     price: 75,
     category: "Seed",
-    image_url: "https://images.unsplash.com/photo-1594489428504-5c0c480a15fd?w=500&auto=format&fit=crop&q=60"
+    image_url: "https://images.unsplash.com/photo-1615485290382-441e4d0c9cb5?q=80&w=800&auto=format&fit=crop"
   },
   {
     name: "Hybrid Sweet Corn Seeds",
     description: "Super-sweet variety with uniform cob size. 75-80 days maturity period. High market demand.",
     price: 240,
     category: "Seed",
-    image_url: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=500&auto=format&fit=crop&q=60",
+    image_url: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?q=80&w=800&auto=format&fit=crop",
     badge: "NEW"
   },
   {
@@ -342,7 +342,7 @@ const products = [
     description: "Mid-oleic open-pollinated sunflower seeds with 45% oil content and disease package resistance.",
     price: 310,
     category: "Seed",
-    image_url: "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?w=500&auto=format&fit=crop&q=60"
+    image_url: "https://images.unsplash.com/photo-1597714026720-8f74c62310ba?q=80&w=800&auto=format&fit=crop"
   },
   {
     name: "Smart Soil Moisture & pH Sensor",
