@@ -197,7 +197,7 @@ async function startServer() {
       console.log(`🚀 AgroFertMart is live!`);
       console.log(`   Environment : ${IS_PRODUCTION ? 'PRODUCTION' : 'DEVELOPMENT'}`);
       console.log(`   Port        : ${PORT}`);
-      console.log(`   URL         : ${IS_PRODUCTION ? 'https://your-app.onrender.com' : `http://localhost:${PORT}`}`);
+      console.log(`   URL         : ${IS_PRODUCTION ? 'https://agro-fert-mart.vercel.app' : `http://localhost:${PORT}`}`);
       console.log('═══════════════════════════════════════════');
     });
 
