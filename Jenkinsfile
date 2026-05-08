@@ -9,7 +9,8 @@ pipeline {
 
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/kusuluruHundansai/AgroFertMart.git'
+                git branch: 'main',
+                url: 'https://github.com/kusuluruHundansai/AgroFertMart.git'
             }
         }
 
