@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agrofertmart-deployment
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: agrofertmart
+
+  template:
+    metadata:
+      labels:
+        app: agrofertmart
+
+    spec:
+      containers:
+      - name: agrofertmart
+        image: hundansai/agrofertmart:latest
+
+        ports:
+        - containerPort: 3000
+
+        env:
+        - name: MONGODB_URI
+          value: "mongodb+srv://hundansai:Sai2006@cluster0.1uot2ny.mongodb.net/Sai?appName=Cluster0"
