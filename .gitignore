@@ -3,6 +3,6 @@ node_modules
 uploads/
 
 
-.terraform/
-terraform.tfstate
-terraform.tfstate.backup
+terraform-project/.terraform/
+terraform-project/terraform.tfstate
+terraform-project/terraform.tfstate.backup
